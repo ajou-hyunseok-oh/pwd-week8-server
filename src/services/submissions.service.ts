@@ -63,6 +63,8 @@ export async function createSubmission(body: unknown, user: AppUser) {
       price_range: textField(input.priceRange, "priceRange"),
       recommended_menu: menuField(input.recommendedMenu),
       review: textField(input.review, "review"),
+      // [이론: 사용자 ID] user는 컨트롤러가 req.auth에서 전달한 검증된 프로필입니다.
+      // 요청 본문의 submitterId 대신 이 계정의 UUID를 저장해 제보와 사용자를 연결합니다.
       submitter_id: user.id,
       submitter_name: user.name,
       submitter_email: user.email,

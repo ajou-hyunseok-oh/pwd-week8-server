@@ -93,6 +93,8 @@ test("공개 맛집 조회와 health는 인증을 요구하지 않는다", async
   expect((await request(app).get("/health")).body).toEqual({ status: "ok" });
   expect(client.auth.getUser).not.toHaveBeenCalled();
 });
+// [이론: JWT 검증] 아래 대역은 Auth의 검증 실패를 가정해 HTTP 처리를 확인합니다.
+// 실제 JWT의 서명을 변조하거나 만료 시각을 지나서 보내는 실험은 아닙니다.
 test("만료·위조 토큰, 비활성 계정, 누락 프로필을 거절한다", async () => {
   client.auth.getUser.mockResolvedValueOnce({
     data: { user: null },

@@ -7,6 +7,7 @@ create table if not exists public.restaurants (
   description text not null default '', recommended_menu text[] not null default '{}',
   likes integer not null default 0, image text not null default ''
 );
+-- [이론: 계정과 사용자 ID] Auth 계정과 앱 프로필은 이름·이메일이 아닌 같은 UUID로 연결합니다.
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null default '', name text not null, avatar text not null default '',
@@ -55,7 +56,8 @@ create trigger foodmap_profiles_updated before update on public.profiles for eac
 drop trigger if exists foodmap_submissions_updated on public.submissions;
 create trigger foodmap_submissions_updated before update on public.submissions for each row execute function public.foodmap_touch_updated_at();
 
--- Auth가 관리하는 비밀번호·토큰은 public 테이블로 복사하지 않습니다.
+-- [이론: 비밀번호 해시·솔트] 비밀번호의 저장·검증은 Supabase Auth가 담당합니다.
+-- Auth가 관리하는 비밀번호 해시·솔트·토큰은 public 테이블로 복사하지 않습니다.
 -- 역할은 클라이언트 metadata와 무관하게 반드시 user로 생성합니다.
 create or replace function public.foodmap_handle_new_user() returns trigger
 language plpgsql security definer set search_path='' as $$

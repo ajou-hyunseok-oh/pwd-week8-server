@@ -16,6 +16,8 @@ export function getSupabase(): SupabaseClient<Database> {
   ) {
     throw new Error("서버의 SUPABASE_URL과 SUPABASE_SECRET_KEY를 설정하세요.");
   }
+  // [이론: 세션] 전역 서버 SDK가 사용자 로그인 세션을 보관·갱신하지 않도록 설정합니다.
+  // 브라우저 SDK와 Supabase Auth에서 관리하는 로그인 세션은 별도로 존재합니다.
   client = createClient<Database>(url, key, {
     auth: {
       persistSession: false,

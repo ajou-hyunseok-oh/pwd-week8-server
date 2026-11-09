@@ -231,9 +231,12 @@ async function main() {
       .update({ is_active: true })
       .eq("id", userId);
     if (reactivate.error) throwDatabaseError(reactivate.error);
+    // [이론: 리프레시 토큰] 새 액세스 토큰 발급과 사용을 확인합니다. 만료 경계 실험은 아닙니다.
     const refreshed = await userAuth.auth.refreshSession();
     if (refreshed.error) throw refreshed.error;
     await api("/api/auth/me", 200, refreshed.data.session!.access_token);
+    // [이론: 로그아웃] 현재 세션의 로그아웃과 SDK 보관값 제거를 확인합니다.
+    // 로그아웃 전 복사한 액세스 토큰의 즉시 거절이나 갱신 토큰 재사용 실패는 검사하지 않습니다.
     const logout = await userAuth.auth.signOut({ scope: "local" });
     if (logout.error) throw logout.error;
     assert.equal((await userAuth.auth.getSession()).data.session, null);
